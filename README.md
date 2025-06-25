@@ -34,3 +34,22 @@ Ensure the following are installed and configured:
 - ✅ AWS account + IAM user with `AdministratorAccess`
 - ✅ [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html)
 - ✅ [Terraform](https://www.terraform.io/downloads.html) (v1.0+)
+
+## 🚀 Deployment Steps
+Follow these steps to deploy your Hasura dev environment on AWS. The deployment is split into two Terraform stages for better dependency management.
+
+ - ✅ Clone the Repository: `git clone <your-repository-url> cd <your-repository-name>`
+ - ✅ Run command `terraform init`
+ - ✅ Start Bash script deploy.sh `./deploy.sh`
+ - 🎉 Done! Infrastructure will be deployed successfully.
+
+## 🧹 Cleanup
+To tear down all the AWS resources created by this Terraform configuration and avoid incurring unnecessary costs:
+
+Run `./destoy.sh` or execute the Terraform destroy command:
+
+`terraform destroy`
+
+Terraform will prompt you to confirm the destruction of resources. Type yes and press Enter.
+
+⚠️ Important: This action is irreversible and will delete your entire database cluster, ECS services, and other provisioned resources. Ensure you have backed up any critical data before proceeding with terraform destroy.

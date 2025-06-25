@@ -4,13 +4,17 @@ resource "random_password" "admin_secret" {
 }
 
 resource "random_password" "master_password" {
-  length  = 20
-  special = true
+  length           = 20
+  override_special = "!#$%^&*()-_=+[]{}<>?.,"  # Allowed special characters
+  special          = true
+  upper            = true
+  lower            = true
+  number           = true
 }
 
 variable "domain_name" {
   type    = string
-  default = "hasura.dev.mydomain.com" # Замени на нужный
+  default = "hasura.dev.mydomain.com" # Replace with your actual domain
 }
 
 variable "master_username" {
@@ -18,7 +22,6 @@ variable "master_username" {
   default = "hasura_admin"
 }
 
-# /dev/hasura/admin_secret (SecureString)
 resource "aws_ssm_parameter" "admin_secret" {
   name      = "/dev/hasura/admin_secret"
   type      = "SecureString"
@@ -30,11 +33,10 @@ resource "aws_ssm_parameter" "admin_secret" {
   }
 }
 
-# /dev/hasura/db_url (String)
 resource "aws_ssm_parameter" "db_url" {
   name      = "/dev/hasura/db_url"
   type      = "String"
-  value     = "postgres://${var.master_username}:${random_password.master_password.result}@host.dns.name:5432/hasura" # Заменить host на актуальный RDS endpoint
+  value     = "postgres://${var.master_username}:${random_password.master_password.result}@host.dns.name:5432/hasura"
   overwrite = true
 
   tags = {
@@ -42,7 +44,6 @@ resource "aws_ssm_parameter" "db_url" {
   }
 }
 
-# /dev/hasura/domain_name (String)
 resource "aws_ssm_parameter" "domain_name" {
   name      = "/dev/hasura/domain_name"
   type      = "String"
@@ -54,11 +55,10 @@ resource "aws_ssm_parameter" "domain_name" {
   }
 }
 
-# /dev/hasura/rds/db_endpoint (String)
 resource "aws_ssm_parameter" "rds_db_endpoint" {
   name      = "/dev/hasura/rds/db_endpoint"
   type      = "String"
-  value     = "host.dns.name" # Заменить на RDS Cluster endpoint
+  value     = "host.dns.name" # Replace with your RDS Cluster endpoint
   overwrite = true
 
   tags = {
@@ -66,7 +66,6 @@ resource "aws_ssm_parameter" "rds_db_endpoint" {
   }
 }
 
-# /dev/hasura/rds/master_password (SecureString)
 resource "aws_ssm_parameter" "rds_master_password" {
   name      = "/dev/hasura/rds/master_password"
   type      = "SecureString"
@@ -78,7 +77,6 @@ resource "aws_ssm_parameter" "rds_master_password" {
   }
 }
 
-# /dev/hasura/rds/master_username (String)
 resource "aws_ssm_parameter" "rds_master_username" {
   name      = "/dev/hasura/rds/master_username"
   type      = "String"

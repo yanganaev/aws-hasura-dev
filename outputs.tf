@@ -19,7 +19,7 @@ output "alb_dns_name" {
 output "hasura_url" {
   description = "The expected URL to access Hasura"
   value       = "https://${data.aws_ssm_parameter.domain_name.value}"
-  sensitive   = true # FIX: Added sensitive = true to acknowledge sensitive data exposure
+  sensitive   = true
 }
 
 output "db_configurator_instance_id" {
@@ -30,4 +30,14 @@ output "db_configurator_instance_id" {
 output "db_configurator_sg_id" {
   description = "ID of the DB configurator security group"
   value       = module.db_configurator.configurator_security_group_id
+}
+
+output "bastion_instance_id" {
+  description = "ID of the Bastion EC2 instance"
+  value       = module.bastion.bastion_instance_id
+}
+
+output "bastion_sg_id" {
+  description = "Security group ID of the Bastion"
+  value       = module.bastion.bastion_sg_id
 }

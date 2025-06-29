@@ -1,26 +1,28 @@
+# Generate secure admin_secret (no wildcards)
 resource "random_password" "admin_secret" {
   length  = 32
-  special = true
+  special = false
 }
 
+# Generate master_password (no wildcards)
 resource "random_password" "master_password" {
-  length           = 20
-  override_special = "!#$%^&*()-_=+[]{}<>?.,"  # Allowed special characters
-  special          = true
-  upper            = true
-  lower            = true
-  number           = true
+  length  = 20
+  special = false
 }
 
+# Домен
 variable "domain_name" {
   type    = string
-  default = "hasura.dev.mydomain.com" # Replace with your actual domain
+  default = "hasura.dev.mydomain.com" # replace with actual
 }
 
+# User name PostgreSQL
 variable "master_username" {
   type    = string
   default = "hasura_admin"
 }
+
+# SSM parameters
 
 resource "aws_ssm_parameter" "admin_secret" {
   name      = "/dev/hasura/admin_secret"
@@ -30,39 +32,6 @@ resource "aws_ssm_parameter" "admin_secret" {
 
   tags = {
     Name = "Hasura Admin Secret"
-  }
-}
-
-resource "aws_ssm_parameter" "db_url" {
-  name      = "/dev/hasura/db_url"
-  type      = "String"
-  value     = "postgres://${var.master_username}:${random_password.master_password.result}@host.dns.name:5432/hasura"
-  overwrite = true
-
-  tags = {
-    Name = "Hasura DB URL"
-  }
-}
-
-resource "aws_ssm_parameter" "domain_name" {
-  name      = "/dev/hasura/domain_name"
-  type      = "String"
-  value     = var.domain_name
-  overwrite = true
-
-  tags = {
-    Name = "Hasura Domain Name"
-  }
-}
-
-resource "aws_ssm_parameter" "rds_db_endpoint" {
-  name      = "/dev/hasura/rds/db_endpoint"
-  type      = "String"
-  value     = "host.dns.name" # Replace with your RDS Cluster endpoint
-  overwrite = true
-
-  tags = {
-    Name = "Hasura RDS Endpoint"
   }
 }
 
@@ -85,5 +54,16 @@ resource "aws_ssm_parameter" "rds_master_username" {
 
   tags = {
     Name = "Hasura RDS Master Username"
+  }
+}
+
+resource "aws_ssm_parameter" "domain_name" {
+  name      = "/dev/hasura/domain_name"
+  type      = "String"
+  value     = var.domain_name
+  overwrite = true
+
+  tags = {
+    Name = "Hasura Domain Name"
   }
 }

@@ -65,7 +65,7 @@ resource "aws_rds_cluster_instance" "main" {
   count                = 1
   identifier           = "${var.project_name}-${var.env}-aurora-pg-instance-${count.index}"
   cluster_identifier   = aws_rds_cluster.main.id
-  instance_class       = "db.r5.large"
+  instance_class       = "db.t3.medium"
   engine               = aws_rds_cluster.main.engine
   engine_version       = aws_rds_cluster.main.engine_version
   publicly_accessible  = false
